@@ -3,7 +3,7 @@ This module contains ChatBot functions associated with answers.
 """
 import random
 from src.packages.logger import Log, Loggers
-from src.packages.bot.chat_model import ChatModel
+# from src.packages.bot.chat_model import ChatModel
 from src.packages.loaders import config
 
 __all__ = ["ChatBot"]
@@ -21,7 +21,8 @@ class ChatBot:
     """
 
     _logger: Log
-    _chat_model = ChatModel()
+
+    # _chat_model = ChatModel()
 
     def __init__(self, logger: Log) -> None:
         """
@@ -68,12 +69,12 @@ class ChatBot:
         @param text: some question from user.
         @return: some intent for question.
         """
-        try:
-            return self._chat_model.get_intent(text)
+        # try:
+        return None #self._chat_model.get_intent(text)
         # pylint: disable=W0703:
-        except Exception as exception:
-            ChatBotException(f"Unexpected error: {exception}")
-            return None
+        #except Exception as exception:
+        #     ChatBotException(f"Unexpected error: {exception}")
+        #     return None
 
     def _log_question(self, text: str, intent: str) -> None:
         """
