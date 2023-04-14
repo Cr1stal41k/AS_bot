@@ -7,19 +7,19 @@
 #### Clone git repository
 
 ```shell
-$ git clone https://github.com/Cr1stal41k/AS_bot.git
+git clone https://github.com/Cr1stal41k/AS_bot.git
 ```
 #### Move in directory AS_bot
 
 ```shell
-$ cd AS_bot/
+cd AS_bot/
 ```
 #### Create files
 
 ##### Create db.csv
 
 ```shell
-$ cat <<EOF > ./src/db/db.csv
+cat <<EOF > ./src/db/db.csv
 Telegram_ID
 1234567
 7654321
@@ -28,7 +28,7 @@ EOF
 ##### Create .env
 
 ```shell
-$ cat <<EOF > ./.env
+cat <<EOF > ./.env
 # API key of telegram
 API_KEY_TELEGRAM="your token"
 # Email server
@@ -51,15 +51,15 @@ EOF
 #### Run the script
 
 ```shell
-$ chmod +x install.sh && ./install.sh
+chmod +x install.sh && ./install.sh
 ```
 #### Define PID
 
 ```shell
-$ ps -aux | grep 'python -m src.main'
+ps -aux | grep 'python -m src.main'
 ```
 #### Stop process
 
 ```shell
-$ kill PID
+kill PID
 ```
