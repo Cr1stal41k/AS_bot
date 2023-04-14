@@ -1,96 +1,65 @@
-# Automation service chat-bot
+# Install "Automation service chat-bot" in Linux
 
 ## Getting Started
 
-_Run all commands from the root of the project_
-
 ### Preparing
 
-#### Install python 3.10.x
-
-##### Windows:
-
-[download python 3.10](https://www.python.org/downloads/release/python-3100/).
-
-##### Linux:
+#### Clone git repository
 
 ```shell
-$ sudo apt-get install python3.10
+$ git clone https://github.com/Cr1stal41k/AS_bot.git
 ```
-
-#### Install dependencies
-
-##### Windows:
-
-Initialization and launch of the virtual environment with poetry.
+#### Move in directory AS_bot
 
 ```shell
-> pip install poetry
-
-> poetry env use PATH_TO_YOUR_PYTHON_3.10
+$ cd AS_bot/
 ```
+#### Create files
 
-Install _Microsoft C++ Build Tools_ 14.0 or greater.
-
-Install dependencies.
+##### Create db.csv
 
 ```shell
-> poetry install --no-dev
+$ cat <<EOF > ./src/db/db.csv
+Telegram_ID
+1234567
+7654321
+EOF
 ```
-
-##### Linux:
-
-Initialization and launch of the virtual environment with poetry.
+##### Create .env
 
 ```shell
-$ curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3.10
-
-$ poetry env use python3.10
+$ cat <<EOF > ./.env
+# API key of telegram
+API_KEY_TELEGRAM="your token"
+# Email server
+EMAIL_SERVICE_HOST="mail.ru"
+# Email login
+EMAIL_LOGIN="123@mail.ru"
+# Email password
+EMAIL_PASSWORD="123456"
+# Port for ssl connection to the server,
+# usually 993 (not required for outlook)
+EMAIL_SERVICE_SSL_PORT=XXX
+# Email of the sender from whom the necessary letters come
+EMAIL_SENDER="123@mail.ru"
+# Time interval for checking mail, for example, check email every 10 minutes
+EMAIL_CHECK_TIME_MIN=1
+# Telegram user ID to whom we send received email message
+ADMIN_ID_TELEGRAM=123456
+EOF
 ```
-
-Install dependencies.
+#### Run the script
 
 ```shell
-$ sudo apt-get install python3.10-dev
-
-$ poetry install --no-dev
+$ chmod +x install.sh && ./install.sh
 ```
-
-#### Environment variables
-
-Rename the `.env.dist` file to `.env` and fill in the indicated fields.
-
-### Launch
+#### Define PID
 
 ```shell
- poetry run python -m src.main
+$ ps -aux | grep 'python -m src.main'
 ```
-
-### Stopping
+#### Stop process
 
 ```shell
- ctrl + c
+$ kill PID
 ```
-
-### Dev. env.
-
-#### Preparation
-
-##### Pre-commit
-
-To enable pre-commit on the current repository:
-
-```shell
- pre-commit install
-```
-
-#### Commands
-
-- `poetry run black src/*` – launch style checker.
-- `poetry run pylint src/*` – launch linter.
-- `poetry run python -m src.main` – launch app.
-
-
-## Authors
-
-* **Nelin Maxim** – [GitHub](https://github.com/Nelin-M)
