@@ -20,6 +20,7 @@ from src.packages.message import Message
 from src.packages.parser.parser import ParserException
 from src.packages.path_storage import PathStorage
 from src.packages.database import Database
+from src.core.config import ServerConfig
 
 __all__ = ["Bot"]
 
@@ -42,21 +43,21 @@ class Bot:
     _db: Database
     bot: Telegram_bot
     _dp: Dispatcher
+    _server: ServerConfig
 
-    def __init__(self, logger: Log) -> None:
+    def __init__(self, logger: Log,bot: Telegram_bot, email_checker:EmailCheckerOutlook,server:ServerConfig) -> None:
         """
         Initialize Bot object.
         @param logger: custom class responsible for logging.
         """
         self._chat_bot = ChatBot(logger)
         self._logger = logger
-        self._email_checker = EmailCheckerOutlook(
-            env_variables["EMAIL_SERVICE_HOST"], env_variables["EMAIL_LOGIN"], env_variables["EMAIL_PASSWORD"]
-        )
-        self._db = Database(PathStorage.get_path_to_database_file())
-        self.bot = Telegram_bot(env_variables["API_KEY_TELEGRAM"])
+        self._email_checker = email_checker
+        self.bot = bot
         self._dp = Dispatcher(self.bot)
         self._register_handlers()
+        self._server = server
+        self._db = Database(PathStorage.get_path_to_database_file(),self._server.admin_id_telegram)
 
     @staticmethod
     def _private_chat_guard(func):
@@ -85,7 +86,7 @@ class Bot:
         """
 
         async def wrapper(self, message: types.Message):
-            if str(message.from_user.id) != env_variables["ADMIN_ID_TELEGRAM"]:
+            if str(message.from_user.id) != self._server.admin_id_telegram:
                 await self.bot.send_message(message.from_user.id, config["only_for_admin"])
                 return
             await func(self, message)
@@ -212,7 +213,7 @@ class Bot:
                 await self.bot.send_message(telegram_id, str(message), parse_mode=parse_mode)
             except ChatNotFound:
                 await self.bot.send_message(
-                    env_variables["ADMIN_ID_TELEGRAM"],
+                    self._server.admin_id_telegram,
                     f"Пользователь с id={telegram_id} не существует или не начал чат с ботом.",
                 )
 
@@ -233,16 +234,17 @@ class Bot:
         self._email_checker.login()
         emails = self._email_checker.get_all_emails_from_inbox()
         emails = self._email_checker.get_unseen_emails(emails)
-        emails = self._email_checker.get_emails_by_sender(emails, env_variables["EMAIL_SENDER"])
+        emails = self._email_checker.get_emails_by_sender(emails, self._server.email_sender)
         emails = self._email_checker.order_emails_by_time(emails)
         for email in emails:
-            email.is_read = True
-            email.save()
             message_payload = self._email_checker.get_email_message_payloads(email)
             message_subject = self._email_checker.get_email_message_subject(email)
-            message_content = Parser.parse_email(message_payload)
-            message = Message(message_subject, message_content, is_stylized=True)
-            await self._make_a_mailing_list(self._db.find_all_users(), message, parse_mode=types.ParseMode.HTML)
+            if self._server.email_subject in message_subject:
+                email.is_read = True
+                email.save()
+                message_content = Parser.parse_email(message_payload)
+                message = Message(message_subject, message_content, is_stylized=True)
+                await self._make_a_mailing_list(self._db.find_all_users(), message, parse_mode=types.ParseMode.HTML)
         self._email_checker.logout()
 
     async def _check_email_for_messages_by_timer(self):
@@ -251,7 +253,7 @@ class Bot:
         function at some time specified in the environment variables.
         """
         while True:
-            await asyncio.sleep(float(env_variables["EMAIL_CHECK_TIME_MIN"]) * 60)
+            await asyncio.sleep(float(self._server.email_check_time_min) * 6)
             try:
                 await self._check_email_for_messages()
             except EmailCheckerOutlookException as exception:
@@ -275,6 +277,9 @@ class Bot:
         """
         The main method that starts the `Bot`.
         """
-        loop = asyncio.get_event_loop()
+        # 1. Создаем новый цикл для этого потока
+        loop = asyncio.new_event_loop()
+        # 2. Устанавливаем его как текущий для данного потока
+        asyncio.set_event_loop(loop)
         loop.create_task(self._check_email_for_messages_by_timer())
-        executor.start_polling(self._dp, skip_updates=True)
+        executor.start_polling(self._dp, skip_updates=True, loop=loop)

@@ -25,29 +25,42 @@ Telegram_ID
 7654321
 EOF
 ```
-##### Create .env
+##### Create env.json
 
-```shell
-cat <<EOF > ./.env
-# API key of telegram
-API_KEY_TELEGRAM="your token"
-# Email server
-EMAIL_SERVICE_HOST="mail.ru"
-# Email login
-EMAIL_LOGIN="123@mail.ru"
-# Email password
-EMAIL_PASSWORD="123456"
-# Port for ssl connection to the server,
-# usually 993 (not required for outlook)
-EMAIL_SERVICE_SSL_PORT=XXX
-# Email of the sender from whom the necessary letters come
-EMAIL_SENDER="123@mail.ru"
-# Time interval for checking mail, for example, check email every 10 minutes
-EMAIL_CHECK_TIME_MIN=1
-# Telegram user ID to whom we send received email message
-ADMIN_ID_TELEGRAM=123456
-EOF
-```
+В папке settings, нужно создать файл env.json
+
+{
+    "SERVERS":
+    [
+        {
+            "email_service_host":"email_service_host",
+            "email_login":"email_login",
+            "email_password":"email_password",
+            "email_service_ssl_port":993,
+            "email_check_time_min":1,
+            "email_sender":"email_sender",
+            "admin_id_telegram":11111,
+            "api_key_telegram":"admin_id_telegram",
+            "email_subject":"spas"
+
+        },
+       {
+            "email_service_host":"email_service_host",
+            "email_login":"email_login",
+            "email_password":"email_password",
+            "email_service_ssl_port":993,
+            "email_check_time_min":1,
+            "email_sender":"email_sender",
+            "admin_id_telegram":3333,
+            "api_key_telegram":"admin_id_telegram",
+            "email_subject":"sdo"
+
+        },
+
+    ]
+}
+
+
 #### Run the script
 
 ```shell
