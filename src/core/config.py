@@ -23,4 +23,6 @@ def load_servers_config(config_path: str = "settings\env.json") -> List[ServerCo
     return servers
 # Глобальная переменная — список всех серверов
 
+
 servers_config = load_servers_config()
+all_email_subjects = [server.email_subject for server in servers_config]

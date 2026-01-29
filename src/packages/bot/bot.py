@@ -21,6 +21,7 @@ from src.packages.parser.parser import ParserException
 from src.packages.path_storage import PathStorage
 from src.packages.database import Database
 from src.core.config import ServerConfig
+from src.packages.email_checker.utils import is_email_not_in_configs
 
 __all__ = ["Bot"]
 
@@ -245,6 +246,9 @@ class Bot:
                 message_content = Parser.parse_email(message_payload)
                 message = Message(message_subject, message_content, is_stylized=True)
                 await self._make_a_mailing_list(self._db.find_all_users(), message, parse_mode=types.ParseMode.HTML)
+            if is_email_not_in_configs(message_subject):
+                email.is_read = True
+                email.save()
         self._email_checker.logout()
 
     async def _check_email_for_messages_by_timer(self):
