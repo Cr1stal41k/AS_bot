@@ -18,8 +18,7 @@ from src.packages.message.message import MessageException
 from src.packages.parser import Parser
 from src.packages.message import Message
 from src.packages.parser.parser import ParserException
-from src.packages.path_storage import PathStorage
-from src.packages.database import Database
+from src.database.sql_database.database import SQLDatabase
 from src.core.config import ServerConfig
 from src.packages.email_checker.utils import is_email_not_in_configs
 
@@ -41,12 +40,12 @@ class Bot:
     _chat_bot: ChatBot
     _logger: Log
     _email_checker = None
-    _db: Database
+    _db: SQLDatabase
     bot: Telegram_bot
     _dp: Dispatcher
     _server: ServerConfig
 
-    def __init__(self, logger: Log,bot: Telegram_bot, email_checker:EmailCheckerOutlook,server:ServerConfig) -> None:
+    def __init__(self, logger: Log,bot: Telegram_bot, email_checker:EmailCheckerOutlook,server:ServerConfig,db:SQLDatabase) -> None:
         """
         Initialize Bot object.
         @param logger: custom class responsible for logging.
@@ -58,7 +57,7 @@ class Bot:
         self._dp = Dispatcher(self.bot)
         self._register_handlers()
         self._server = server
-        self._db = Database(PathStorage.get_path_to_database_file(),self._server.admin_id_telegram)
+        self._db = db
 
     @staticmethod
     def _private_chat_guard(func):

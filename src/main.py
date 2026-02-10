@@ -9,10 +9,11 @@ from aiogram import Bot as Telegram_bot
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 sys.path.append('src')
-from src.packages.logger import Log, Loggers
+from src.packages.logger import Log
 from src.packages.bot.bot import Bot
 from src.core.config import servers_config
 from src.packages.email_checker import EmailCheckerOutlook
+from src.database.sql_database.database import SQLDatabase
 
 def main():
     """
@@ -23,7 +24,8 @@ def main():
     for server in servers_config:
         telegram_bot = Telegram_bot(server.api_key_telegram)
         email_checker = EmailCheckerOutlook(server.email_service_host, server.email_login, server.email_password)
-        bot = Bot(logger,bot=telegram_bot,email_checker=email_checker,server=server)
+        sql_database = SQLDatabase(server=server)
+        bot = Bot(logger,bot=telegram_bot,email_checker=email_checker,server=server,db=sql_database)
         thread = threading.Thread(target=bot.start)
         thread.start()
         threads.append(thread)

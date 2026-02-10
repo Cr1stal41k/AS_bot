@@ -13,6 +13,7 @@ class ServerConfig(BaseModel):
     admin_id_telegram: int
     api_key_telegram: str
     email_subject: str
+    bot_name: str
 
 def load_servers_config(config_path: str = "settings\env.json") -> List[ServerConfig]:
     with open(config_path, "r", encoding="utf-8") as f:
