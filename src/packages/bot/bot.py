@@ -86,7 +86,7 @@ class Bot:
         """
 
         async def wrapper(self, message: types.Message):
-            if str(message.from_user.id) != self._server.admin_id_telegram:
+            if message.from_user.id != self._server.admin_id_telegram:
                 await self.bot.send_message(message.from_user.id, config["only_for_admin"])
                 return
             await func(self, message)
