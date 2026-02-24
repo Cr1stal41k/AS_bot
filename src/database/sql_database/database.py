@@ -27,17 +27,18 @@ class SQLDatabase:
         self.admin_id_telegram = server.admin_id_telegram
         self.add_user(self.admin_id_telegram)
 
-    def does_the_user_exist(self, telegram_id: int) -> bool:
-        return self._get_user_by_telegram_id(telegram_id)
 
     def find_all_users(self) -> List[int]:
-        return self._get_users_by_bot_name()
+        users_db = self._get_users_by_bot_name()
+        return [user.telegram_id for user in users_db]
+    
 
     def add_user(self, telegram_id: int) -> bool:
         if not self._get_user_by_telegram_id(telegram_id):
             self._add_user(telegram_id)
             return True
         return False
+
 
     def remove_user(self, telegram_id: int) -> bool:
         self._delete_user_by_telegram_id(telegram_id)
@@ -59,6 +60,7 @@ class SQLDatabase:
     def _get_users_by_bot_name(self,db):
         return db.query(UserModel).filter(UserModel.bot_name==self.bot_name).all()
 
+
     @connect_db
     def _get_user_by_telegram_id(self,telegram_id,db):
         db_object = db.execute(
@@ -68,7 +70,9 @@ class SQLDatabase:
             )
         )
         return db_object.scalars().first()
-    
+
+
     @connect_db
     def _delete_user_by_telegram_id(self,telegram_id,db):
         db.query(UserModel).filter(UserModel.bot_name==self.bot_name,UserModel.telegram_id==telegram_id).delete()
+        db.commit()

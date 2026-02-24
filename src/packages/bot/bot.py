@@ -161,7 +161,7 @@ class Bot:
                 if telegram_id < 0:
                     await self.bot.send_message(
                         message.from_user.id,
-                        f"Пользователь с id={telegram_id} не добавлен, так как id не может быть отрицательным.",
+                        f"Пользователь с id={telegram_id} не удалён, так как id не может быть отрицательным.",
                     )
                     return
                 if not self._db.remove_user(telegram_id):
@@ -172,7 +172,7 @@ class Bot:
                     return
                 await self.bot.send_message(
                     message.from_user.id,
-                    f"Пользователь с id={telegram_id} добавлен.",
+                    f"Пользователь с id={telegram_id} успешно удалён.",
                 )
             except ValueError:
                 await self.bot.send_message(message.from_user.id, config["id_contains_more_than_just_numbers"])
@@ -187,9 +187,9 @@ class Bot:
         This handler will be called when user sends `/add_user` command.
         """
         try:
-            users = self._db.find_all_users()
-            users = [str(user_id) for user_id in users]
-            await self.bot.send_message(message.from_user.id, "\n".join(users))
+            telegram_ids = self._db.find_all_users()
+            telegram_ids = [str(telegram_id) for telegram_id in telegram_ids]
+            await self.bot.send_message(message.from_user.id, "\n".join(telegram_ids))
         except Exception as exception:  # pylint: disable=W0703
             await self.bot.send_message(message.from_user.id, config["bot_unexpected_exception"])
             self._logger.critical(Loggers.APP.value, f"Unexpected error: {exception}.")

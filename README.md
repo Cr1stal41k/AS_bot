@@ -33,7 +33,7 @@ EOF
     "SERVERS":
     [
         {
-            "email_service_host":"email_service_host",
+            "email_service_host":"mail.gazprom-neft.ru",
             "email_login":"email_login",
             "email_password":"email_password",
             "email_service_ssl_port":993,
@@ -41,11 +41,12 @@ EOF
             "email_sender":"email_sender",
             "admin_id_telegram":11111,
             "api_key_telegram":"admin_id_telegram",
-            "email_subject":"spas"
+            "email_subject":"spas",
+            "bot_name": "spas_bot"
 
         },
        {
-            "email_service_host":"email_service_host",
+            "email_service_host":"mail.gazprom-neft.ru",
             "email_login":"email_login",
             "email_password":"email_password",
             "email_service_ssl_port":993,
@@ -53,10 +54,9 @@ EOF
             "email_sender":"email_sender",
             "admin_id_telegram":3333,
             "api_key_telegram":"admin_id_telegram",
-            "email_subject":"sdo"
-
+            "email_subject":"sdo",
+            "bot_name": "sdo_bot"
         },
-
     ]
 }
 
