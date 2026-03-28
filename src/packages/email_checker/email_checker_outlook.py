@@ -26,7 +26,7 @@ class EmailCheckerOutlook:
     _email_login = ""
     _email_service_config = None
 
-    def __init__(self, email_host: str, email_login: str, email_password: str, max_wait=60):
+    def __init__(self, email_host: str, email_login: str, email_password: str, max_wait=100):
         self._email_login = email_login
         email_username = self._email_login.split("@")[0]
         self._email_service_config = Configuration(

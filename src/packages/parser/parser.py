@@ -1,8 +1,9 @@
 """
 Parsing module.
 """
-from typing import Tuple, List
+from typing import Tuple, List, Union
 from bs4 import BeautifulSoup
+import re
 
 __all__ = ["Parser", "ParserException"]
 
@@ -71,6 +72,90 @@ class Parser:
     @classmethod
     def _parse_text(cls, soup: BeautifulSoup) -> str:
         return cls._remove_garbage(soup.text)
+    
+    @classmethod
+    def parse_monitoring_email(cls, email_body: str) -> dict:
+        """Парсит письмо мониторинга и возвращает словарь с извлеченными данными."""
+
+        pattern = r"""Мониторинг \((?P<location>omsk|msk)\), время расчета = (?P<datetime>.+) \(время UTC\)
+
+        Ср\. время расчета = (?P<avg_time>\d+\.\d+) с\.
+
+        Кол-во моделей = (?P<models_count>\d+)/(?P<total_models>\d+) шт\."""
+
+        match = re.search(pattern, email_body, flags=re.VERBOSE | re.DOTALL)
+
+        if not match:
+            raise ParserException("Не удалось распарсить письмо.")
+
+        data = {
+            'location': match.group('location'),
+            'datetime': match.group('datetime'),
+            'avg_time': float(match.group('avg_time')),
+            'models_count': int(match.group('models_count')),
+            'total_models': int(match.group('total_models'))
+        }
+
+        return data
+    
+    @classmethod
+    def _parse_error_message(cls, error_message: str) -> dict:
+        pattern = r'Ошибка (?P<error_type>.+?): Timeout (?P<timeout>d+)ms exceeded.s*Call log:s*(?P<call_log>.+)'
+        
+        match = re.search(pattern, error_message, flags=re.DOTALL)
+
+        if not match:
+            raise ParserException("Не удалось распарсить сообщение об ошибке.")
+
+        data = {
+            'error_type': cls._remove_garbage(match.group('error_type')),
+            'timeout': int(match.group('timeout')),
+            'call_log': cls._remove_garbage(match.group('call_log'))
+        }
+
+        return data
+
+    @classmethod
+    def parse_monitoring_email(cls, email_body: str) -> dict:
+        """Парсит письмо мониторинга и возвращает словарь с извлеченными данными."""
+
+        pattern = r"""Мониторинг \((?P<location>omsk|msk)\), время расчета = (?P<datetime>.+) \(время UTC\)
+
+        Ср\. время расчета = (?P<avg_time>\d+\.\d+) с\.
+
+        Кол-во моделей = (?P<models_count>\d+)/(?P<total_models>\d+) шт\."""
+
+        match = re.search(pattern, email_body, flags=re.VERBOSE | re.DOTALL)
+
+        if not match:
+            raise ParserException("Не удалось распарсить письмо.")
+
+        data = {
+            'location': match.group('location'),
+            'datetime': match.group('datetime'),
+            'avg_time': float(match.group('avg_time')),
+            'models_count': int(match.group('models_count')),
+            'total_models': int(match.group('total_models'))
+        }
+
+        return data
+    
+    @classmethod
+    def _parse_error_message(cls, error_message: str) -> dict:
+        pattern = r'Ошибка (?P<error_type>.+?): Timeout (?P<timeout>d+)ms exceeded.s*Call log:s*(?P<call_log>.+)'
+        
+        match = re.search(pattern, error_message, flags=re.DOTALL)
+
+        if not match:
+            raise ParserException("Не удалось распарсить сообщение об ошибке.")
+
+        data = {
+            'error_type': cls._remove_garbage(match.group('error_type')),
+            'timeout': int(match.group('timeout')),
+            'call_log': cls._remove_garbage(match.group('call_log'))
+        }
+
+        return data
 
     @classmethod
     def parse_email(cls, message_payload_html) -> Tuple[List[str], List[List[str]]] or str:

@@ -4,7 +4,7 @@ Database module.
 from typing import List
 import pandas as pd
 from packages.path_storage.path_storage import PathStorage
-from packages.loaders import env_variables
+from src.packages.path_storage import PathStorage
 
 __all__ = ["Database"]
 
@@ -26,18 +26,19 @@ class Database:
     _DB_FILE_ENCODING = "utf-8"
     _COLUMN_TELEGRAM_ID = "Telegram_ID"
 
-    def __init__(self, path_to_db_file):
-        self._path_to_db_file = path_to_db_file
+    def __init__(self,server):
+        admin_id_telegram = server.admin_id_telegram
+        self._path_to_db_file = PathStorage.get_path_to_database_file()
         if not PathStorage.does_file_exists(self._path_to_db_file):
-            self._init_db_file()
+            self._init_db_file(admin_id_telegram)
 
-    def _init_db_file(self):
+    def _init_db_file(self,admin_id_telegram):
         """
         Initializes the database file if it does not exist.
         The database will have a single entry – the admin id.
         """
         database = pd.DataFrame(columns=[self._COLUMN_TELEGRAM_ID])
-        database.loc[len(database.index)] = env_variables["ADMIN_ID_TELEGRAM"]
+        database.loc[len(database.index)] = admin_id_telegram
         self._save_db_file(database)
 
     def _load_db_file(self) -> pd.DataFrame:

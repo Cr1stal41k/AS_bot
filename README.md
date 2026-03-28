@@ -1,96 +1,90 @@
-# Automation service chat-bot
+# Install "Automation service chat-bot" in Linux
 
 ## Getting Started
 
-_Run all commands from the root of the project_
-
 ### Preparing
 
-#### Install python 3.10.x
-
-##### Windows:
-
-[download python 3.10](https://www.python.org/downloads/release/python-3100/).
-
-##### Linux:
+#### Clone git repository
 
 ```shell
-$ sudo apt-get install python3.10
+git clone https://github.com/Cr1stal41k/AS_bot.git
 ```
-
-#### Install dependencies
-
-##### Windows:
-
-Initialization and launch of the virtual environment with poetry.
+#### Move in directory AS_bot
 
 ```shell
-> pip install poetry
-
-> poetry env use PATH_TO_YOUR_PYTHON_3.10
+cd AS_bot/
 ```
+#### Create files
 
-Install _Microsoft C++ Build Tools_ 14.0 or greater.
-
-Install dependencies.
+##### Create db.csv
 
 ```shell
-> poetry install --no-dev
+cat <<EOF > ./src/db/db.csv
+Telegram_ID
+1234567
+7654321
+EOF
 ```
+##### Create env.json
 
-##### Linux:
+В папке settings, нужно создать файл env.json
 
-Initialization and launch of the virtual environment with poetry.
+{
+    "SERVERS":
+    [
+        {
+            "email_service_host":"mail.gazprom-neft.ru",
+            "email_login":"email_login",
+            "email_password":"email_password",
+            "email_service_ssl_port":993,
+            "email_check_time_min":1,
+            "email_sender":"email_sender",
+            "admin_id_telegram":11111,
+            "api_key_telegram":"admin_id_telegram",
+            "email_subject":"spas",
+            "bot_name": "spas_bot"
+
+        },
+       {
+            "email_service_host":"mail.gazprom-neft.ru",
+            "email_login":"email_login",
+            "email_password":"email_password",
+            "email_service_ssl_port":993,
+            "email_check_time_min":1,
+            "email_sender":"email_sender",
+            "admin_id_telegram":3333,
+            "api_key_telegram":"admin_id_telegram",
+            "email_subject":"sdo",
+            "bot_name": "sdo_bot"
+        },
+    ]
+}
+
+
+#### Run the script
 
 ```shell
-$ curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3.10
-
-$ poetry env use python3.10
+chmod +x install.sh && ./install.sh
 ```
-
-Install dependencies.
+#### Define PID
 
 ```shell
-$ sudo apt-get install python3.10-dev
-
-$ poetry install --no-dev
+ps -aux | grep 'python -m src.main'
 ```
-
-#### Environment variables
-
-Rename the `.env.dist` file to `.env` and fill in the indicated fields.
-
-### Launch
+#### Stop process
 
 ```shell
- poetry run python -m src.main
+kill PID
 ```
 
-### Stopping
-
-```shell
- ctrl + c
-```
-
-### Dev. env.
-
-#### Preparation
-
-##### Pre-commit
-
-To enable pre-commit on the current repository:
-
-```shell
- pre-commit install
-```
-
-#### Commands
-
-- `poetry run black src/*` – launch style checker.
-- `poetry run pylint src/*` – launch linter.
-- `poetry run python -m src.main` – launch app.
 
 
-## Authors
+#### Development
+pip install poetry
+poetry env use C:\Users\User\AppData\Local\Programs\Python\Python310\python.exe 
 
-* **Nelin Maxim** – [GitHub](https://github.com/Nelin-M)
+# Create virtualvenv .venv local
+poetry config virtualenvs.in-project true
+poetry install
+poetry install --only main
+poetry run python -m src.main

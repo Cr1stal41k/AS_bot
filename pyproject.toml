@@ -3,29 +3,31 @@ name = "AS-chat-bot"
 version = "1.0.0"
 description = ""
 authors = ["Maxim Nelin <nelin.max0@gmail.com>"]
+package-mode = false
 
 [tool.poetry.scripts]
 
 [tool.poetry.dependencies]
-python = "3.10.x"
+python = ">=3.10,<3.11.dev0"
 numpy = "^1.22.4"
 pandas = "^1.4.2"
-sklearn = "^0.0"
+scikit-learn = "^1.6"
 matplotlib = "^3.5.2"
 aiogram = "^2.20"
-python-dotenv = "^0.20.0"
+python-dotenv = ">=0.21.0"
 scipy = "^1.8.1"
 pylint = "2.11.1"
 bs4 = "^0.0.1"
 lxml = "^4.9.0"
 python-socketio = {extras = ["asyncio_client"], version = "^5.6.0"}
 requests = "^2.28.0"
-tensorflow = "^2.9.1"
-keras = "^2.9.0"
-nltk = "^3.7"
-exchangelib= {file = "/home/user/AS_bot/exchangelib-4.9.0-py2.py3-none-any.whl" }
+exchangelib= {file = "exchangelib-4.9.0-py2.py3-none-any.whl" }
 pymorphy2 = "^0.9.1"
-pyxDamerauLevenshtein = {file = "/home/user/AS_bot/pyxDamerauLevenshtein-1.7.1.tar.gz"}
+pydantic = "^2.12.5"
+sqlalchemy = "^2.0.46"
+pydantic-settings = "^2.12.0"
+alembic = "^1.18.4"
+
 
 
 [tool.poetry.dev-dependencies]
@@ -33,7 +35,6 @@ black = { version = "*", allow-prereleases = true }
 pylint = "^2.11.1"
 commitizen = "^2.20.0"
 pre-commit = "^2.15.0"
-jupyter = "^1.0.0"
 pydot = "^1.4.2"
 graphviz = "^0.20"
 
